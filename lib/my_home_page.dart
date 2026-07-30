@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'second_page.dart';
 
-
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
 
@@ -11,9 +10,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   bool status = false;
-
-  final nameFieldController = TextEditingController();
-  final surnameFieldController = TextEditingController();
 
   void toggle() {
     setState(() {
@@ -29,27 +25,17 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           children: [
             TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context, 
-                  MaterialPageRoute(
-                    builder: (context) => SecondPage(
-                      name: nameFieldController.text,
-                      surname: surnameFieldController.text
-                    )
-                  )
+              onPressed: () async {
+                final result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SecondPage()),
                 );
+                print(result);
               },
               child: Text("next page"),
             ),
-            TextField(
-              controller: nameFieldController,
-            ),
-            TextField(
-              controller: surnameFieldController,
-            )
-          ]
-        )
+          ],
+        ),
       ),
     );
   }
