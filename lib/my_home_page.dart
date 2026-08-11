@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -10,14 +13,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String jsonString = """
-    {
-      "number" : 1
-    }
-  """;
-
-  Map jsonData = {"stroka": "Hello world"};
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,30 +20,37 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         child: TextButton(
           onPressed: () async {
-            // print(jsonString.runtimeType); // String
-            // dynamic jsonValue = jsonDecode(jsonString);
-            // print(jsonValue);
-            // print(jsonValue.runtimeType);
+            try {
+              http.Response response = await http
+                  .post(
+                    Uri.https(
+                      "jsonplaceholder.typicode.com",
+                      "/posts",
+                    ), // адрес ресурса,
+                    headers: {},
+                    body: jsonEncode({
+                      // обязательно jsonEncode
+                      "title": "Hello",
+                      "body": "My first post",
+                      "userId": 1,
+                    }),
+                  )
+                  .timeout(const Duration(seconds: 10)); // Duration
 
-            // jsonDecode() -> dynamic
-            // jsonEncode() -> String
+                  print(response); // flutter: Instance of 'Response'
+                  print(response.body);
+                  
 
-            // String jsonEncodedValue = jsonEncode(jsonData);
-            // print(jsonEncodedValue);
-            // print(jsonEncodedValue.runtimeType);
-            // flutter: {"stroka":"Hello world"}
-            // flutter: String
+                  if (response.statusCode >= 200 && response.statusCode < 300) {
 
-            // rootBundle.loadString() - текстовые файлы
-            // rootBundle.load() - бинарные файлы (картинки)
-            dynamic loadedImage = await rootBundle.load(
-              "assets/images/image.jpg",
-            );
+                  } else if (response.statusCode >= 400 && response.statusCode < 500) {
 
-            print(loadedImage.buffer.asUint8List());
-            print(loadedImage.buffer.asUint8List().runtimeType);
-            
-
+                  }
+            } on TimeoutException {
+              print("timeout");
+            } catch (error) {
+              print(error);
+            }
           },
           child: Text("action"),
         ),
