@@ -7,54 +7,90 @@ import 'package:http/http.dart' as http;
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
-
+  
   @override
   State<StatefulWidget> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  double x1 = 0;
+  double x2 = 0;
+  double x3 = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("first app")),
-      body: Center(
-        child: TextButton(
-          onPressed: () async {
-            try {
-              http.Response response = await http
-                  .post(
-                    Uri.https(
-                      "jsonplaceholder.typicode.com",
-                      "/posts",
-                    ), // адрес ресурса,
-                    headers: {},
-                    body: jsonEncode({
-                      // обязательно jsonEncode
-                      "title": "Hello",
-                      "body": "My first post",
-                      "userId": 1,
-                    }),
-                  )
-                  .timeout(const Duration(seconds: 10)); // Duration
-
-                  print(response); // flutter: Instance of 'Response'
-                  print(response.body);
-                  
-
-                  if (response.statusCode >= 200 && response.statusCode < 300) {
-
-                  } else if (response.statusCode >= 400 && response.statusCode < 500) {
-
-                  }
-            } on TimeoutException {
-              print("timeout");
-            } catch (error) {
-              print(error);
-            }
-          },
-          child: Text("action"),
-        ),
-      ),
+      body: Column(
+        children: [
+          SizedBox(
+            height: 360,
+            child: Stack(
+              children: [
+                Positioned(
+                  left: x1,
+                  top: 10,
+                  child: GestureDetector(
+                    child: Container(
+                      color: Colors.red,
+                      width: 100,
+                      height: 100,
+                    ),
+                    onPanUpdate: (details) {
+                        double deltaX = details.delta.dx;
+                        setState(() {
+                          x1 += deltaX;
+                        });
+                      },
+                  ),
+                ),
+                Positioned(
+                  left: x2,
+                  top: 120,
+                  child: GestureDetector(
+                    child: Container(
+                      color: Colors.blue,
+                      width: 100,
+                      height: 100,
+                    ),
+                    onPanUpdate: (details) {
+                        double deltaX = details.delta.dx;
+                        setState(() {
+                          x2 += deltaX;
+                        });
+                      },
+                  ),
+                ),
+                Positioned(
+                  left: x3,
+                  top: 230,
+                  child: GestureDetector(
+                    child: Container(
+                      color: Colors.green,
+                      width: 100,
+                      height: 100,
+                    ),
+                    onPanUpdate: (details) {
+                        double deltaX = details.delta.dx;
+                        setState(() {
+                          x3 += deltaX;
+                        });
+                      },
+                  ),
+                ),
+              ] 
+            ),
+          ),
+          Column(
+            spacing: 5,
+            children: [
+              Text("x1: ${x1.round().toString()}"),
+              Text("x2: ${x2.round().toString()}"),
+              Text("x3: ${x3.round().toString()}"),
+            ]
+          )
+        ]
+      )
     );
   }
 }
